@@ -10,12 +10,10 @@ class ReadMing
   end
 
   def read(file_path)
-    edge_num = 0
-
     raw_edges = File.read(ROAD_PATH)
+
     CSV.foreach(ROAD_PATH, headers: true, encoding: 'CP950') do |row|
       next if row['distance'].nil?
-      edge_num += 1
       between = row['name'].encode('utf-8').split('～')
 
       edge = Edge.new
