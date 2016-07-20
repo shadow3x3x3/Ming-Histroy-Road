@@ -2,7 +2,7 @@ require 'csv'
 require_relative '../edge'
 
 class ReadMing
-  attr_reader :edges
+  attr_accessor :edges
 
   def initialize(file_path)
     @edges = []
