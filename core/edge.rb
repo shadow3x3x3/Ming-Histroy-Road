@@ -3,6 +3,7 @@ class Edge
   attr_accessor :id, :src, :dst, :attrs, :type
 
   def initialize
+    @id    = "UNKNOW"
     @attrs = [0]
     @type  = "UNKNOW"
   end

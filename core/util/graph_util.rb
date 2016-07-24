@@ -24,12 +24,21 @@ module GraphUtil
     raise ArgumentError, "not connect between #{src} and #{dst}"
   end
 
-  def find_edge_include(node)
-    result_edges = []
+  def same_edge?(edge1, edge2)
+    edge1_src_id = edge1.src
+    edge1_dst_id = edge1.dst
+    edge2_src_id = edge2.src
+    edge2_dst_id = edge2.dst
+    return true if edge1_src_id == edge2_src_id && edge1_dst_id == edge2_dst_id
+    return true if edge1_dst_id == edge2_src_id && edge1_src_id == edge2_dst_id
+    false
+  end
+
+  def duplicate_edge?(new_edge)
     @edges.each do |edge|
-      result_edges << edge if edge.src == node || edge.dst == node
+      return true if same_edge?(edge, new_edge)
     end
-    result_edges
+    false
   end
 
   def same_edge?(edge1, edge2)
