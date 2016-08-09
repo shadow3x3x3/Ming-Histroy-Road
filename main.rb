@@ -2,14 +2,23 @@ require_relative 'core/IO/read_ming'
 require_relative 'core/edge_generator'
 
 ROAD_PATH = './ming_data/mingroad_fix.csv'.freeze
+NODE_PATH = './ming_data/mingtravel.txt'.freeze
 
-ming = ReadMing.new(ROAD_PATH)
-eg = EdgeGenerator.new(ming.edges)
-eg.find_edges_combination(deep_limit: 6)
+ming = ReadMing.new(edge_path: ROAD_PATH, node_path: NODE_PATH)
+# eg = EdgeGenerator.new(ming.edges)
+# eg.find_edges_combination(deep_limit: 6)
 
 # ming.edges.each do |edge|
 #   puts "#{edge.id}: #{edge.src} - #{edge.dst}"
 # end
+
+ming.nodes.each do |node|
+  puts "#{node.id}: #{node.long} - #{node.lat}"
+end
+
+ming.write_edges
+ming.write_nodes
+
 
 # eg.new_edges.each do |edge|
 #   puts "===="
@@ -18,7 +27,7 @@ eg.find_edges_combination(deep_limit: 6)
 #   puts edge.dist.to_s
 # end
 
-puts eg.new_edges.size
+# puts eg.new_edges.size
 
 # puts ming.edges.first.dst == ming.edges[1].src
 

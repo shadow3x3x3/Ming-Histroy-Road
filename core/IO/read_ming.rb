@@ -2,12 +2,12 @@ require 'csv'
 require_relative '../edge'
 require_relative '../node'
 require_relative '../util/graph_util'
+require_relative '../IO/output_to_txt'
 
 
 class ReadMing
   attr_accessor :edges, :nodes
-
-  include GraphUtil
+  include GraphUtil, OutputToTxt
 
   def initialize(edge_path: nil, node_path: nil)
     @edges = []

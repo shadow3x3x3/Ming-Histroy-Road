@@ -54,3 +54,5 @@ ming_data
 
 # vscode setting
 .vscode
+output/ming_edges.txt
+output/ming_nodes.txt
