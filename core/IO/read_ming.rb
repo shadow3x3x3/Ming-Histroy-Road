@@ -1,16 +1,19 @@
 require 'csv'
 require_relative '../edge'
+require_relative '../node'
 require_relative '../util/graph_util'
 
 
 class ReadMing
-  attr_accessor :edges
+  attr_accessor :edges, :nodes
 
   include GraphUtil
 
   def initialize(edge_path: nil, node_path: nil)
     @edges = []
+    @nodes = []
     read_edges(edge_path)
+    read_nodes(node_path)
   end
 
   def read_edges(file_path)
@@ -26,8 +29,24 @@ class ReadMing
       edge.set_dist(row['distance'].to_f)
       edge.type = row['type'].encode('utf-8') unless row['type'].nil?
 
-      @edges.push(edge) unless duplicate_edge?(edge)
+      @edges << edge unless duplicate_edge?(edge)
     end
+  end
+
+  def read_nodes(file_path)
+    raw_nodes = File.read(file_path)
+
+    raw_nodes.each_line do |line|
+      line = line.encode('UTF-8').split(',')
+
+      node = Node.new
+      node.id   = line[1].to_s
+      node.name = line[2].to_s
+      node.long = line[3].to_f
+      node.lat  = line[4].to_f
+      @nodes << node
+    end
+
   end
 
 end
