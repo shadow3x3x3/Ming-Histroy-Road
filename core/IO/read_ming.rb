@@ -8,15 +8,13 @@ class ReadMing
 
   include GraphUtil
 
-  def initialize(file_path)
+  def initialize(edge_path: nil, node_path: nil)
     @edges = []
-    read(file_path)
+    read_edges(edge_path)
   end
 
-  def read(file_path)
-    raw_edges = File.read(ROAD_PATH)
-
-    CSV.foreach(ROAD_PATH, headers: true, encoding: 'CP950') do |row|
+  def read_edges(file_path)
+    CSV.foreach(file_path, headers: true, encoding: 'CP950') do |row|
       next if row['distance'].nil?
       between = row['name'].encode('utf-8').split('～')
       next if between[0] == between[1]
