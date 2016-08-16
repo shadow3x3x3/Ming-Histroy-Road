@@ -1,8 +1,8 @@
-require_relative 'core/IO/read_ming'
-require_relative 'core/edge_generator'
+require_relative 'coIO/read_ming'
+require_relative 'edge_generator'
 
-ROAD_PATH = './ming_data/mingroad_fix.csv'.freeze
-NODE_PATH = './ming_data/mingtravel.txt'.freeze
+ROAD_PATH = '../ming_data/mingroad_fix.csv'.freeze
+NODE_PATH = '../ming_data/mingtravel.txt'.freeze
 
 ming = ReadMing.new(edge_path: ROAD_PATH, node_path: NODE_PATH)
 # eg = EdgeGenerator.new(ming.edges)
