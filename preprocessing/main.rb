@@ -1,4 +1,4 @@
-require_relative 'coIO/read_ming'
+require_relative 'IO/read_ming'
 require_relative 'edge_generator'
 
 ROAD_PATH = '../ming_data/mingroad_fix.csv'.freeze
