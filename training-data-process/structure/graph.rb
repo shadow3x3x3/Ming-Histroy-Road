@@ -1,3 +1,5 @@
+require 'bigdecimal'
+
 require_relative './graph_util'
 require_relative 'IO/read_util'
 require_relative './edge'
@@ -35,5 +37,11 @@ class Graph
     new_node = find_node_by_name(edge.dst.name)
     edge.dst = new_node unless new_node.nil?
     edge
+  end
+
+  # return km
+  def euclidean_dist(node1, node2)
+    ((Math.sqrt(((BigDecimal(node1.long.to_s) - BigDecimal(node2.long.to_s)) ** 2) +
+      ((BigDecimal(node1.lat.to_s) - BigDecimal(node1.lat.to_s)) ** 2))) * 111).round(4)
   end
 end
