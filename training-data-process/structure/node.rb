@@ -3,7 +3,7 @@ class Node
   attr_reader :id, :name, :long, :lat
 
   def initialize(attrs)
-    init_array(attrs)
+    attrs.class == Array ? init_array(attrs) : init_by_edge(attrs)
     @neighbors = []
   end
 
@@ -19,5 +19,12 @@ class Node
     @name = attrs.shift
     @long = attrs.shift.to_f
     @lat  = attrs.shift.to_f
+  end
+
+  def init_by_edge(attrs)
+    @id   = 'NOT_EXIST'
+    @name = attrs
+    @long = 'NOT_EXIST'
+    @lat  = 'NOT_EXIST'
   end
 end
