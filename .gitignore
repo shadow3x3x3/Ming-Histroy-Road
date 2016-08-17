@@ -58,3 +58,5 @@ ming_data
 # raw data
 output/
 data/
+
+main.rb
