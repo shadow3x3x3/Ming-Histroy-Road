@@ -6,6 +6,14 @@ module GraphUtil
     find_paths(src, dst)
   end
 
+  def find_edges_by_node(node)
+    found_edges = []
+    @edges.each do |edge|
+      found_edges << edge if node_in_edge?(node, edge)
+    end
+    found_edges
+  end
+
   private
 
   def find_neighbor
@@ -37,6 +45,10 @@ module GraphUtil
   def find_node_by_name(target)
     @nodes.each { |n| return n if n.name == target }
     nil
+  end
+
+  def node_in_edge?(node, edge)
+    node.name == (edge.src.name || edge.dst.name)
   end
 
   def find_paths(src, dst)
