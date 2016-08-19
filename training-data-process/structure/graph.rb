@@ -14,7 +14,6 @@ class Graph
   def initialize(params = {})
     raw_nodes = params[:raw_nodes]
     raw_edges = params[:raw_edges]
-    @dim   = params[:dim]
     @nodes = []
     @edges = []
     initialize_nodes(raw_nodes) unless raw_nodes.nil?
