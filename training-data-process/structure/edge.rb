@@ -12,4 +12,10 @@ class Edge
     @dist  = attrs.shift.to_f
     raise ArgumentError, "value of @dist (#{@dist}) is not a Fixnum" unless @dist.class == Float
   end
+
+  def connect?(edge)
+    return true if @src.name == edge.src.name || @src.name == edge.dst.name
+    return true if @dst.name == edge.src.name || @dst.name == edge.dst.name
+    false
+  end
 end

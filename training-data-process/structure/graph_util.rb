@@ -47,10 +47,6 @@ module GraphUtil
     nil
   end
 
-  def node_in_edge?(node, edge)
-    node.name == (edge.src.name || edge.dst.name)
-  end
-
   def find_paths(src, dst)
     paths = []
     path_recursive(src.id, dst.id, paths, [])

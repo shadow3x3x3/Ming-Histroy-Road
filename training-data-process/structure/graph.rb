@@ -38,6 +38,14 @@ class Graph
     edge
   end
 
+  def find_edges_neighbors(target_edge)
+    neighbor_edges = []
+    @edges.each do |edge|
+      neighbor_edges << edge if edge.connect?(target_edge)
+    end
+    neighbor_edges
+  end
+
   # return km
   def euclidean_dist(node1, node2)
     ((Math.sqrt(((BigDecimal(node1.long.to_s) - BigDecimal(node2.long.to_s)) ** 2) +
