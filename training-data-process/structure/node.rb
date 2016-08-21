@@ -27,4 +27,8 @@ class Node
     @long = 'NOT_EXIST'
     @lat  = 'NOT_EXIST'
   end
+
+  def in_edge?(edge)
+    name == edge.src.name || name == edge.src.name
+  end
 end
