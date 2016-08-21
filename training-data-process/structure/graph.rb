@@ -9,7 +9,7 @@ require_relative './node'
 class Graph
   include GraphUtil, ReadUtil
 
-  attr_reader :edges, :nodes
+  attr_reader :edges, :nodes, :one_hop_table
 
   def initialize(params = {})
     raw_nodes = params[:raw_nodes]
@@ -18,6 +18,7 @@ class Graph
     @edges = []
     initialize_nodes(raw_nodes) unless raw_nodes.nil?
     initialize_edges(raw_edges) unless raw_edges.nil?
+    @one_hop_table = generate_one_hop_table
   end
 
   def add_node(node)
@@ -37,6 +38,19 @@ class Graph
   end
 
   private
+
+  def generate_one_hop_table
+    one_hop_table = {}
+
+    @edges.each do |edge|
+      one_hop_table[edge] = []
+      find_edges_neighbors(edge).each do |n_edge|
+        next if edge.id == n_edge.id
+        one_hop_table[edge] << n_edge
+      end
+    end
+    one_hop_table
+  end
 
   def find_edges_neighbors(target_edge)
     neighbor_edges = []
