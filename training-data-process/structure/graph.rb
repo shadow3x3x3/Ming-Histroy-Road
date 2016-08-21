@@ -30,13 +30,13 @@ class Graph
     @edges << check_nodes_in_edge(new_edge)
   end
 
-  def check_nodes_in_edge(edge)
-    new_node = find_node_by_name(edge.src.name)
-    edge.src = new_node unless new_node.nil?
-    new_node = find_node_by_name(edge.dst.name)
-    edge.dst = new_node unless new_node.nil?
-    edge
+  # return km
+  def euclidean_dist(node1, node2)
+    ((Math.sqrt(((BigDecimal(node1.long.to_s) - BigDecimal(node2.long.to_s)) ** 2) +
+      ((BigDecimal(node1.lat.to_s) - BigDecimal(node1.lat.to_s)) ** 2))) * 111).round(4)
   end
+
+  private
 
   def find_edges_neighbors(target_edge)
     neighbor_edges = []
@@ -46,9 +46,11 @@ class Graph
     neighbor_edges
   end
 
-  # return km
-  def euclidean_dist(node1, node2)
-    ((Math.sqrt(((BigDecimal(node1.long.to_s) - BigDecimal(node2.long.to_s)) ** 2) +
-      ((BigDecimal(node1.lat.to_s) - BigDecimal(node1.lat.to_s)) ** 2))) * 111).round(4)
+  def check_nodes_in_edge(edge)
+    new_node = find_node_by_name(edge.src.name)
+    edge.src = new_node unless new_node.nil?
+    new_node = find_node_by_name(edge.dst.name)
+    edge.dst = new_node unless new_node.nil?
+    edge
   end
 end
