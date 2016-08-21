@@ -9,7 +9,7 @@ require_relative './node'
 class Graph
   include GraphUtil, ReadUtil
 
-  attr_accessor :edges, :nodes
+  attr_reader :edges, :nodes
 
   def initialize(params = {})
     raw_nodes = params[:raw_nodes]
