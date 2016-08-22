@@ -39,8 +39,6 @@ module GraphUtil
 
   def path_recursive(node, core_nodes, paths, path)
     path << node
-
-    # path.each {|n| puts n.name }
     if core_nodes.include?(node)
       path = get_dst(node, paths, path)
       return
