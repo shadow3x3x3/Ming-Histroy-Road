@@ -1,15 +1,19 @@
 # Record Ming Node
 class Node
-  attr_reader :id, :name, :long, :lat
+  attr_reader :id, :name, :long, :lat, :neighbors
 
   def initialize(attrs)
     attrs.class == Array ? init_array(attrs) : init_by_edge(attrs)
     @neighbors = []
   end
 
-  def add_neighbor(node)
-    raise "node need to be Node object" unless node.class == Node
+  def add_neighbors(node)
+    raise "expect(Node) got (#{node.class})" unless node.class == Node
     @neighbors << node unless @neighbors.include?(node)
+  end
+
+  def in_edge?(edge)
+    name == edge.src.name || name == edge.src.name
   end
 
   private
@@ -26,9 +30,5 @@ class Node
     @name = attrs
     @long = 'NOT_EXIST'
     @lat  = 'NOT_EXIST'
-  end
-
-  def in_edge?(edge)
-    name == edge.src.name || name == edge.src.name
   end
 end

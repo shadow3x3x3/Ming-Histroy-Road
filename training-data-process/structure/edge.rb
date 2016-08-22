@@ -2,7 +2,7 @@ require_relative './node'
 
 # Record Edge
 class Edge
-  attr_reader :id, :attrs
+  attr_reader :id, :dist
   attr_accessor :src, :dst
 
   def initialize(attrs)

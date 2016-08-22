@@ -18,6 +18,7 @@ class Graph
     @edges = []
     initialize_nodes(raw_nodes) unless raw_nodes.nil?
     initialize_edges(raw_edges) unless raw_edges.nil?
+    calc_neighbors
     @degrees_table = generate_degrees_table
   end
 
@@ -29,6 +30,7 @@ class Graph
   def add_edge(edge)
     new_edge = edge.class == Edge ? edge : Edge.new(edge)
     @edges << check_nodes_in_edge(new_edge)
+    # add_nodes_by(@edges.last)
   end
 
   # return km
@@ -37,7 +39,34 @@ class Graph
       ((BigDecimal(node1.lat.to_s) - BigDecimal(node1.lat.to_s)) ** 2))) * 111).round(4)
   end
 
+  def is_neighbor?(node1, node2)
+    return false if find_edge_between(node1, node2).nil?
+    true
+  end
+
+  def find_edge_between(node1, node2)
+    @edges.each do |edge|
+      return edge if edge.between?(node1, node2)
+    end
+    nil
+  end
+
   private
+
+  def calc_neighbors
+    @nodes.each do |node|
+      find_neighbors_by(node).each {|nn| node.add_neighbors(nn) }
+    end
+  end
+
+  def find_neighbors_by(node)
+    neighbors = []
+    @edges.each do |e|
+      n = check_neighbor(e, node)
+      neighbors << n unless n.nil?
+    end
+    neighbors
+  end
 
   def generate_degrees_table
     degrees_table = {}
@@ -73,5 +102,10 @@ class Graph
     new_node = find_node_by_name(edge.dst.name)
     edge.dst = new_node unless new_node.nil?
     edge
+  end
+
+  def add_nodes_by(edge)
+    @nodes << edge.src unless duplicate_node?(edge.src)
+    @nodes << edge.dst unless duplicate_node?(edge.dst)
   end
 end

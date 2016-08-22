@@ -1,28 +1,12 @@
 # general Util for graph
 module GraphUtil
   def find_all_paths(params)
-    src = find_node(params[:src])
-    dst = find_node(params[:dst])
-    find_paths(src, dst)
-  end
-
-  def find_edges_by_node(node)
-    found_edges = []
-    @edges.each do |edge|
-      found_edges << edge if node_in_edge?(node, edge)
-    end
-    found_edges
+    src        = params[:src]
+    core_nodes = params[:c_nodes]
+    find_paths(src, core_nodes)
   end
 
   private
-
-  def find_neighbor
-    @edges.each do |e|
-      neighbor = check_neighbor(e)
-      next if neighbor.nil?
-      @neighbors << neighbor
-    end
-  end
 
   def duplicate_node?(new_node)
     @nodes.each do |node|
@@ -38,8 +22,9 @@ module GraphUtil
     false
   end
 
-  def find_node(target)
-    @nodes.each { |n| return n if n.id == target }
+  def find_node(name)
+    # puts name
+    @nodes.each { |n| return n if n.name == name }
   end
 
   def find_node_by_name(target)
@@ -47,19 +32,21 @@ module GraphUtil
     nil
   end
 
-  def find_paths(src, dst)
+  def find_paths(src, core_nodes)
     paths = []
-    path_recursive(src.id, dst.id, paths, [])
+    path_recursive(src, core_nodes, paths, [])
   end
 
-  def path_recursive(node, dst, paths, path)
+  def path_recursive(node, core_nodes, paths, path)
     path << node
-    if node == dst
+
+    # path.each {|n| puts n.name }
+    if core_nodes.include?(node)
       path = get_dst(node, paths, path)
       return
     end
-    find_node(node).neighbors.each do |n|
-      path_recursive(n, dst, paths, path) unless path.include?(n)
+    node.neighbors.each do |n|
+      path_recursive(n, core_nodes, paths, path) unless path.include?(n)
     end
     path.delete(node)
     paths
@@ -75,19 +62,25 @@ module GraphUtil
     false
   end
 
+  def same_node?(node1, node2)
+    return true if node1.name == node2.name
+    return true if node1.id == node2.id
+    false
+  end
+
   def get_dst(node, paths, path)
     paths << path.clone
     path.delete(node)
   end
 
-  def check_neighbor(edge)
-    case @id
-    when edge.src
+  def check_neighbor(edge, node)
+    case node.name
+    when edge.src.name
       edge.dst
-    when edge.dst
+    when edge.dst.name
       edge.src
     else
-      return
+      return nil
     end
   end
 end
