@@ -23,4 +23,10 @@ class Edge
     return true if @src.name == node.name || @dst.name == node.name
     false
   end
+
+  def between?(node1, node2)
+    return true if @src.name == node1.name && @dst.name == node2.name
+    return true if @dst.name == node1.name && @src.name == node2.name
+    false
+  end
 end
