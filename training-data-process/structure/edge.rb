@@ -18,4 +18,9 @@ class Edge
     return true if @dst.name == edge.src.name || @dst.name == edge.dst.name
     false
   end
+
+  def include?(node)
+    return true if @src.name == node.name || @dst.name == node.name
+    false
+  end
 end
