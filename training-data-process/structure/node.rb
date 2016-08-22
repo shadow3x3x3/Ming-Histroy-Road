@@ -13,7 +13,7 @@ class Node
   end
 
   def in_edge?(edge)
-    name == edge.src.name || name == edge.src.name
+    name == edge.src.name || name == edge.dst.name
   end
 
   private
