@@ -20,13 +20,14 @@ class Generator
     combinations = find_combination_by_core_nodes
     combinations.each do |c|
       paths = find_core_path(c[0], c[1])
-      @training_data << paths unless paths.empty?
       full_path = ""
       paths.each do |path|
-        path.each do |node|
-          full_path += node.name
-        end
-        puts "#{c[0].name} - #{c[1].name} - #{full_path} - #{core_path_dist(path)}"
+        path.each { |node| full_path += node.name }
+        edges = core_path_to_core_edge(path)
+        full_id = ""
+        edges.each { |e| full_id += e.id.to_s }
+        full_dist = core_path_dist(path)
+        @training_data << "#{c[0].name} - #{c[1].name} - #{full_path} - #{full_id} - #{full_dist} - #{to_day(full_dist)}"
       end
 
     end
@@ -34,14 +35,14 @@ class Generator
 
   def find_core_nodes
     @graph.degrees_table.each do |node, value|
-      next if (0..1) === value.size
+      next if value.size == 0 || value.size == 2
       @core_nodes << node
     end
   end
 
   def find_combination_by_core_nodes
     combinations = @core_nodes.repeated_combination(2).to_a
-    combinations.delete_if {|c| c[0] == c[1] }
+    combinations.delete_if { |c| c[0] == c[1] }
 
     temp_array = [] # for delete duplicates edges
     result = []
@@ -58,12 +59,12 @@ class Generator
     id = 0
     @core_nodes.each do |c_n|
       core_nodes = @core_nodes.clone
-      core_nodes.delete_if {|cn| cn.name == c_n.name }
+      core_nodes.delete_if { |cn| cn.name == c_n.name }
       paths = @graph.find_all_paths(src: c_n, c_nodes: core_nodes)
       unless paths.empty?
-        id += 1
         paths.each do |path|
           unless duplicate_core_edge?(path.first, path.last)
+            id += 1
             @core_edges << CoreEdge.new(id, path.first, path.last, path, path_to_edge(path))
           end
         end
@@ -103,7 +104,7 @@ class Generator
   end
 
   def path_include?(path, n)
-     path.each {|node| return true if node.name == n.name }
+     path.each { |node| return true if node.name == n.name }
      false
   end
 
@@ -127,6 +128,24 @@ class Generator
     edges
   end
 
+  def core_path_to_core_edge(path)
+    edges = []
+    path.each_with_index do |v, i|
+      next if i == path.size - 1
+      next_v = path[i + 1]
+      found_edge = find_core_edge_between(v, next_v)
+      edges << found_edge unless found_edge.nil?
+    end
+    edges
+  end
+
+  def find_core_edge_between(node1, node2)
+    @core_edges.each do |edge|
+      return edge if edge.between?(node1, node2)
+    end
+    nil
+  end
+
   def check_neighbor(edge, node)
     case node.name
     when edge.src.name
@@ -139,9 +158,14 @@ class Generator
   end
 
   def core_path_dist(path)
-    path_to_edge(path).inject(0) do |dist, path|
-      dist + path.dist
+    full_dist = core_path_to_core_edge(path).inject(0) do |dist, edge|
+      dist += edge.dist
     end
+    full_dist
+  end
+
+  def to_day(dist)
+    dist / 50
   end
 end
 
@@ -158,13 +182,19 @@ class CoreEdge
   end
 
   def include_node?(target_node)
-    @nodes.each {|node| return true if node.name == node.name }
+    @nodes.each { |node| return true if node.name == node.name }
     false
   end
 
   def calc_dist
     dist = 0
-    @edges.each {|edge| dist += edge.dist }
+    @edges.each { |edge| dist += edge.dist }
     dist
+  end
+
+  def between?(node1, node2)
+    return true if @src.name == node1.name && @dst.name == node2.name
+    return true if @dst.name == node1.name && @src.name == node2.name
+    false
   end
 end
