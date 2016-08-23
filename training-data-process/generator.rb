@@ -23,15 +23,27 @@ class Generator
       paths = find_core_path(c[0], c[1])
       full_path = ""
       paths.each do |path|
-        path.each { |node| full_path += node.name }
+        path.each { |node| full_path += "#{node.id}_" }
         edges = core_path_to_core_edge(path)
         full_id = ""
         edges.each { |e| full_id += e.id.to_s }
         full_dist = core_path_dist(path)
-        @training_data << [c[0].name, c[1].name, full_path, full_id, full_dist.to_s, to_day(full_dist).to_s]
+        @training_data << [c[0].id, c[1].id, full_path[0..-2], nums_string_encoding(full_id), full_dist.to_s, to_day(full_dist).to_s]
       end
     end
-    OutputUtil.output_2_csv(@training_data)
+    OutputUtil.output_2_csv(core_nodes_hash, @training_data)
+  end
+
+  def nums_string_encoding(nums)
+    coding = "0000"
+    nums.each_char { |chr| coding[chr.to_i - 1] = "1" }
+    coding
+  end
+
+  def core_nodes_hash
+    hash = {}
+    @core_nodes.each { |node| hash[node.id] = node.name }
+    hash
   end
 
   def find_core_nodes
