@@ -1,4 +1,4 @@
-require 'pry-byebug'
+# require 'pry-byebug'
 
 require_relative 'structure/IO/output_util'
 require_relative 'structure/graph'
@@ -13,6 +13,9 @@ class Generator
     @core_edges = []
 
     @training_data = []
+    @start_codes   = []
+    @hop_numbers   = []
+    @distances     = []
   end
 
   def gernerate
@@ -28,16 +31,23 @@ class Generator
         full_id = ""
         edges.each { |e| full_id += e.id.to_s }
         full_dist = core_path_dist(path)
-        @training_data << [c[0].id, c[1].id, full_path[0..-2], nums_string_encoding(full_id), full_dist.to_s, to_day(full_dist).to_s]
+        @start_codes << [nums_string_encoding(full_id), to_day(full_dist).to_s].flatten
+        @training_data << [c[0].id, c[1].id, full_path[0..-2], nums_string_encoding(full_id), full_dist.to_s, to_day(full_dist).to_s].flatten
       end
     end
-    OutputUtil.output_2_csv(core_nodes_hash, @training_data)
+    OutputUtil.output_start_codes_csv("output/ming_start_coding.csv", @start_codes)
+
+    @core_edges.each { |c_e| @hop_numbers << c_e.hop_numbers.to_s }
+    OutputUtil.output_setting_csv("output/ming_hop_numbers.csv", @hop_numbers)
+    #
+    @core_edges.each { |c_e| @distances << c_e.dist.to_s }
+    OutputUtil.output_setting_csv("output/ming_dist.csv", @distances)
   end
 
   def nums_string_encoding(nums)
     coding = "0000"
     nums.each_char { |chr| coding[chr.to_i - 1] = "1" }
-    coding
+    coding.split("")
   end
 
   def core_nodes_hash
@@ -178,7 +188,7 @@ class Generator
   end
 
   def to_day(dist)
-    (dist / 50 + rand.round(2) * 10).round(2)
+    (dist / 50 + rand(-1..1) + rand).round(2)
   end
 end
 
@@ -209,5 +219,9 @@ class CoreEdge
     return true if @src.name == node1.name && @dst.name == node2.name
     return true if @dst.name == node1.name && @src.name == node2.name
     false
+  end
+
+  def hop_numbers
+    @edges.size
   end
 end

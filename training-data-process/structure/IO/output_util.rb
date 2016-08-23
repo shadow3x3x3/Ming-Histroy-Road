@@ -1,15 +1,19 @@
 require 'csv'
 
 module OutputUtil
-  def self.output_2_csv(nodes, dataset)
-    CSV.open("output/ming_core_node.csv", "wb") do |csv|
-      nodes.each { |k, v| csv << [k, v] }
-    end
-
-    CSV.open("output/ming_dataset.csv", "wb",
+  def self.output_start_codes_csv(path, dataset)
+    CSV.open(path, "wb",
       write_headers: true,
-      headers: ["source", "destination", "nodes", "edges", "distance", "days"]) do |csv|
+      headers: ["a", "b", "c", "d", "days"]) do |csv|
       dataset.each { |data| csv << data }
+    end
+  end
+
+  def self.output_setting_csv(path, dataset)
+    CSV.open(path, "wb",
+      write_headers: true,
+      headers: ["a", "b", "c", "d"]) do |csv|
+      csv << dataset
     end
   end
 end
