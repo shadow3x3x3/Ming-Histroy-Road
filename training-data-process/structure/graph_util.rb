@@ -10,7 +10,7 @@ module GraphUtil
 
   def duplicate_node?(new_node)
     @nodes.each do |node|
-      return true if node.id == new_node.id || node.name == new_node.name
+      return true if node.name == new_node.name
     end
     false
   end
@@ -51,12 +51,12 @@ module GraphUtil
   end
 
   def same_edge?(edge1, edge2)
-    edge1_src_id = edge1.src.id
-    edge1_dst_id = edge1.dst.id
-    edge2_src_id = edge2.src.id
-    edge2_dst_id = edge2.dst.id
-    return true if edge1_src_id == edge2_src_id && edge1_dst_id == edge2_dst_id
-    return true if edge1_dst_id == edge2_src_id && edge1_src_id == edge2_dst_id
+    edge1_src_name = edge1.src.name
+    edge1_dst_name = edge1.dst.name
+    edge2_src_name = edge2.src.name
+    edge2_dst_name = edge2.dst.name
+    return true if edge1_src_name == edge2_src_name && edge1_dst_name == edge2_dst_name
+    return true if edge1_dst_name == edge2_src_name && edge1_src_name == edge2_dst_name
     false
   end
 

@@ -98,9 +98,19 @@ class Graph
 
   def check_nodes_in_edge(edge)
     new_node = find_node_by_name(edge.src.name)
-    edge.src = new_node unless new_node.nil?
+    if new_node.nil?
+      # @nodes << edge.src
+    else
+      edge.src = new_node
+    end
+
     new_node = find_node_by_name(edge.dst.name)
-    edge.dst = new_node unless new_node.nil?
+
+    if new_node.nil?
+      # @nodes << edge.dst
+    else
+      edge.dst = new_node
+    end
     edge
   end
 
