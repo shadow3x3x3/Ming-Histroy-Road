@@ -1,5 +1,6 @@
 require 'pry-byebug'
 
+require_relative 'structure/IO/output_util'
 require_relative 'structure/graph'
 
 class Generator
@@ -27,10 +28,10 @@ class Generator
         full_id = ""
         edges.each { |e| full_id += e.id.to_s }
         full_dist = core_path_dist(path)
-        @training_data << "#{c[0].name} - #{c[1].name} - #{full_path} - #{full_id} - #{full_dist} - #{to_day(full_dist)}"
+        @training_data << [c[0].name, c[1].name, full_path, full_id, full_dist.to_s, to_day(full_dist).to_s]
       end
-
     end
+    OutputUtil.output_2_csv(@training_data)
   end
 
   def find_core_nodes
@@ -165,7 +166,7 @@ class Generator
   end
 
   def to_day(dist)
-    dist / 50
+    (dist / 50 + rand.round(2) * 10).round(2)
   end
 end
 
