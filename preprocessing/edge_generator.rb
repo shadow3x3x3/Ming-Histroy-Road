@@ -55,7 +55,6 @@ class EdgeGenerator
   def get_combination(cur_edge, deep = 1, pass = [])
     deep += 1
     pass << cur_edge
-    # show_pass(pass)
     @edges_neighbors[cur_edge.id].each do |neigh_edges|
       next if pass.include?(neigh_edges)
       temp_edge = combine_to_edge(cur_edge, neigh_edges)
@@ -66,12 +65,6 @@ class EdgeGenerator
       get_combination(neigh_edges, deep, pass) if deep < @deep_limit
     end
     pass.delete(cur_edge)
-  end
-
-  def show_pass(pass)
-    pass.each do |e|
-      puts "#{e.src} - #{e.dst}"
-    end
   end
 
   def combine_to_edge(edge1, edge2)
