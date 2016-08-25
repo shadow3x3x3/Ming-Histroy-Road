@@ -16,8 +16,8 @@ ming.nodes.each do |node|
   puts "#{node.id}: #{node.long} - #{node.lat}"
 end
 
-ming.write_edges
-ming.write_nodes
+# ming.write_edges
+# ming.write_nodes
 
 
 # eg.new_edges.each do |edge|

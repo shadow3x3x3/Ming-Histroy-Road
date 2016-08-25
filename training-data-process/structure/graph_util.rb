@@ -22,11 +22,6 @@ module GraphUtil
     false
   end
 
-  def find_node(name)
-    # puts name
-    @nodes.each { |n| return n if n.name == name }
-  end
-
   def find_node_by_name(target)
     @nodes.each { |n| return n if n.name == target }
     nil

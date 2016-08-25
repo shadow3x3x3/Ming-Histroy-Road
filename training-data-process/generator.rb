@@ -21,25 +21,33 @@ class Generator
   def gernerate
     find_core_nodes
     find_core_edges
-    combinations = find_combination_by_core_nodes
+    finding_training_path(find_combination_by_core_nodes)
+    # output
+  end
+
+  def finding_training_path(combinations)
     combinations.each do |c|
-      paths = find_core_path(c[0], c[1])
       full_path = ""
-      paths.each do |path|
+      find_core_path(c[0], c[1]).each do |path|
         path.each { |node| full_path += "#{node.id}_" }
-        edges = core_path_to_core_edge(path)
         full_id = ""
-        edges.each { |e| full_id += e.id.to_s }
+        core_path_to_core_edge(path).each { |e| full_id += e.id.to_s }
         full_dist = core_path_dist(path)
         @start_codes << [nums_string_encoding(full_id), to_day(full_dist).to_s].flatten
-        @training_data << [c[0].id, c[1].id, full_path[0..-2], nums_string_encoding(full_id), full_dist.to_s, to_day(full_dist).to_s].flatten
+        @training_data <<
+          [c[0].id, c[1].id, full_path[0..-2], nums_string_encoding(full_id), full_dist.to_s, to_day(full_dist).to_s].flatten
       end
     end
+
+
+  end
+
+  def output
     OutputUtil.output_start_codes_csv("output/ming_start_coding.csv", @start_codes)
 
     @core_edges.each { |c_e| @hop_numbers << c_e.hop_numbers.to_s }
     OutputUtil.output_setting_csv("output/ming_hop_numbers.csv", @hop_numbers)
-    #
+
     @core_edges.each { |c_e| @distances << c_e.dist.to_s }
     OutputUtil.output_setting_csv("output/ming_dist.csv", @distances)
   end
@@ -75,6 +83,8 @@ class Generator
       temp_array << [c[0].name, c[1].name]
       result << c
     end
+    puts '==combinations=='
+    result.each {|r| puts "#{r[0].name} - #{r[1].name}" }
     result
   end
 
