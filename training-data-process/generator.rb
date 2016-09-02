@@ -23,7 +23,7 @@ class Generator
     find_core_nodes
     find_core_edges
     finding_training_path(find_combination_by_core_nodes)
-    # output
+    output
     puts "..done"
   end
 
@@ -55,7 +55,8 @@ class Generator
   end
 
   def nums_string_encoding(nums)
-    coding = "0000"
+    coding = ""
+    @core_edges.size.times { coding << "0" }
     nums.each_char { |chr| coding[chr.to_i - 1] = "1" }
     coding.split("")
   end
