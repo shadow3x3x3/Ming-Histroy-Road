@@ -40,8 +40,6 @@ class Generator
           [c[0].id, c[1].id, full_path[0..-2], nums_string_encoding(full_id), full_dist.to_s, to_day(full_dist).to_s].flatten
       end
     end
-
-
   end
 
   def output
