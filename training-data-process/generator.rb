@@ -18,11 +18,13 @@ class Generator
     @distances     = []
   end
 
-  def gernerate
+  def generate
+    print "generating.."
     find_core_nodes
     find_core_edges
     finding_training_path(find_combination_by_core_nodes)
     # output
+    puts "..done"
   end
 
   def finding_training_path(combinations)
