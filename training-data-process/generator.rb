@@ -4,7 +4,7 @@ require_relative 'structure/IO/output_util'
 require_relative 'structure/graph'
 
 class Generator
-  attr_reader :core_nodes, :core_edges, :training_data
+  attr_reader :core_nodes, :core_edges, :training_data, :full_path_output
 
   def initialize(nodes_data, edges_data)
     @graph = Graph.new(raw_nodes: nodes_data, raw_edges: edges_data)
@@ -16,6 +16,7 @@ class Generator
     @start_codes   = []
     @hop_numbers   = []
     @distances     = []
+    @full_path_output = []
   end
 
   def generate
@@ -23,39 +24,57 @@ class Generator
     find_core_nodes
     find_core_edges
     finding_training_path(find_combination_by_core_nodes)
+    @core_nodes_output = []
+
+    @core_nodes.each { |n| @core_nodes_output << [n.id, n.long, n.lat] }
     output
     puts "..done"
   end
 
   def finding_training_path(combinations)
     combinations.each do |c|
-      full_path = ""
+      full_path = []
       find_core_path(c[0], c[1]).each do |path|
-        path.each { |node| full_path += "#{node.id}_" }
-        full_id = ""
-        core_path_to_core_edge(path).each { |e| full_id += e.id.to_s }
+        full_id = []
+        # setting_full_path_output(path)
+        # setting_full_path_output(path.reverse)
+
+        core_path_to_core_edge(path).each { |e| full_id << e.id.to_s }
         full_dist = core_path_dist(path)
         @start_codes << [nums_string_encoding(full_id), to_day(full_dist).to_s].flatten
-        @training_data <<
-          [c[0].id, c[1].id, full_path[0..-2], nums_string_encoding(full_id), full_dist.to_s, to_day(full_dist).to_s].flatten
       end
     end
   end
 
   def output
+    # OutputUtil.output_start_codes_csv("output/ming_core_nodes.csv", @core_nodes_output)
+    # OutputUtil.output_start_codes_csv("output/ming_core_path.csv", @full_path_output)
     OutputUtil.output_start_codes_csv("output/ming_start_coding.csv", @start_codes)
-
-    @core_edges.each { |c_e| @hop_numbers << c_e.hop_numbers.to_s }
-    OutputUtil.output_setting_csv("output/ming_hop_numbers.csv", @hop_numbers)
-
-    @core_edges.each { |c_e| @distances << c_e.dist.to_s }
-    OutputUtil.output_setting_csv("output/ming_dist.csv", @distances)
+  #
+  #   @core_edges.each { |c_e| @hop_numbers << c_e.hop_numbers.to_s }
+  #   OutputUtil.output_setting_csv("output/ming_hop_numbers.csv", @hop_numbers)
+  #
+  #   @core_edges.each { |c_e| @distances << c_e.dist.to_s }
+  #   OutputUtil.output_setting_csv("output/ming_dist.csv", @distances)
   end
 
-  def nums_string_encoding(nums)
+  def setting_full_path_output(path)
+    full_path_id = ""
+    full_long    = []
+    full_lat     = []
+
+    path.each do |node|
+      full_path_id += "#{node.id}_"
+      full_long    << node.long.to_s
+      full_lat     << node.lat.to_s
+    end
+    @full_path_output << [path.first.id, path.last.id, full_path_id, path.size, full_long, full_lat].flatten
+  end
+
+  def nums_string_encoding(ids)
     coding = ""
     @core_edges.size.times { coding << "0" }
-    nums.each_char { |chr| coding[chr.to_i - 1] = "1" }
+    ids.each { |id| coding[id.to_i - 1] = "1" }
     coding.split("")
   end
 
@@ -84,8 +103,8 @@ class Generator
       temp_array << [c[0].name, c[1].name]
       result << c
     end
-    puts '==combinations=='
-    result.each {|r| puts "#{r[0].name} - #{r[1].name}" }
+    # puts '==combinations=='
+    # result.each {|r| puts "#{r[0].name} - #{r[1].name}" }
     result
   end
 
@@ -199,7 +218,8 @@ class Generator
   end
 
   def to_day(dist)
-    (dist / 50 + rand(-1..1) + rand).round(2)
+    result = (dist / 50 + rand(-1..1) + rand).round(2)
+    return result < 0 ? result + 0.5 : result
   end
 end
 
